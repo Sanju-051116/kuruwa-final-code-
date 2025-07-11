@@ -1,0 +1,150 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Notifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f4f4f4;
+        }
+        .booking-card {
+            background-color: #fff;
+            border-left: 6px solid #2196F3;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .booking-card.accepted { border-left-color: #4CAF50; }
+        .booking-card.declined { border-left-color: #f44336; }
+
+        .booking-card p {
+            margin: 5px 0;
+        }
+
+        .booking-card form {
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[name="response"][value="Accept"] {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button[name="response"][value="Decline"] {
+            background-color: #f44336;
+            color: white;
+        }
+        .modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 50%;
+  box-shadow: 0px 0px 10px #888;
+}
+
+.close {
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+    <!-- <h2>📬 Booking Requests</h2> -->
+<!-- 
+    {% for booking in bookings %}
+  <div class="booking-card">
+    <p>Patient: {{ booking.patient_full_name }}</p>
+    <p>Location: {{ booking.patient_location }}</p>
+    <p>Requested at: {{ booking.requested_at }}</p>
+
+    <form method="POST" action="{% url 'respond_booking' booking.id %}">
+        {% csrf_token %}
+        <button name="response" value="Accept">✅ Accept</button>
+        <button name="response" value="Decline">❌ Decline</button>
+    </form>
+  </div>
+{% endfor %} -->
+<h2>📬 Booking Requests</h2>
+
+{% for booking in bookings %}
+  <div class="booking-card">
+    <p>Patient: {{ booking.patient_full_name }}</p>
+    <p>Location: {{ booking.patient_location }}</p>
+    <p>Requested at: {{ booking.requested_at }}</p>
+
+    <!-- View Details Button -->
+    <button onclick="openModal({{ booking.id }})">👁️ View Details</button>
+
+    <!-- Accept / Decline Form -->
+    <form method="POST" action="{% url 'respond_booking' booking.id %}">
+        {% csrf_token %}
+        <button name="response" value="Accept">✅ Accept</button>
+        <button name="response" value="Decline">❌ Decline</button>
+    </form>
+
+    <!-- Modal for Patient Details -->
+    <div id="modal-{{ booking.id }}" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal({{ booking.id }})">&times;</span>
+        <h3>Patient Details</h3>
+        <p><strong>Full Name:</strong> {{ booking.patient_full_name }}</p>
+        <p><strong>Email:</strong> {{ booking.patient.email }}</p>
+        <p><strong>Phone:</strong> {{ booking.phone_number }}</p>
+        <p><strong>Location:</strong> {{ booking.patient_location }}</p>
+        <p><strong>Description:</strong> {{ booking.Description }}</p>
+        <p><strong>Booking Date:</strong> {{ booking.book_date }}</p>
+        <p><strong>Duration:</strong> {{ booking.duration }} hour(s)</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+
+<script>
+  function openModal(id) {
+    document.getElementById('modal-' + id).style.display = 'block';
+  }
+
+  function closeModal(id) {
+    document.getElementById('modal-' + id).style.display = 'none';
+  }
+
+  // Close modal when clicking outside of it
+  window.onclick = function(event) {
+    document.querySelectorAll('.modal').forEach(function(modal) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

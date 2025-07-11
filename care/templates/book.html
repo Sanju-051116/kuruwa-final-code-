@@ -1,0 +1,631 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us - Kuruwa</title>
+    <link rel="stylesheet" href="{% static 'css/book.css' %}">
+  <link rel="stylesheet" href="style/common.css" />
+  </head>
+<body>
+<style>
+        /* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Main content styling */
+main {
+    padding: 3rem 0;
+    min-height: calc(100vh - 200px);
+}
+
+.Muted {
+    max-width: 800px;
+    margin: 0 auto !important;
+    padding: 0 2rem;
+}
+
+/* Header section */
+.Muted h1 {
+    font-size: 2.5rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    line-height: 1.2;
+}
+
+.Muted h3 {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    margin-bottom: 3rem;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Form container */
+form {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+/* Message container */
+.message-container {
+    margin-bottom: 2rem;
+}
+
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    border-left: 4px solid;
+    animation: slideInDown 0.5s ease-out;
+}
+
+.alert.success {
+    background: rgba(72, 187, 120, 0.1);
+    color: #2f855a;
+    border-left-color: #48bb78;
+}
+
+.alert.error {
+    background: rgba(245, 101, 101, 0.1);
+    color: #c53030;
+    border-left-color: #f56565;
+}
+
+.alert.warning {
+    background: rgba(237, 137, 54, 0.1);
+    color: #c05621;
+    border-left-color: #ed8936;
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 1rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.form-group label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+}
+
+/* Form inputs */
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    color: #4a5568;
+    font-family: inherit;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+input[type="text"]:hover,
+input[type="tel"]:hover,
+input[type="date"]:hover,
+input[type="time"]:hover,
+input[type="number"]:hover,
+textarea:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Textarea specific */
+textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+/* Placeholder styling */
+::placeholder {
+    color: #a0aec0;
+    opacity: 1;
+}
+
+/* Submit button */
+.btn {
+    width: 100%;
+    padding: 1.2rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+}
+
+.btn:active {
+    transform: translateY(-1px);
+}
+
+/* Footer styling */
+.main_footer {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 3rem 0 2rem;
+    margin-top: 4rem;
+    color: white;
+}
+
+.footer-content {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.linking {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.linking:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.footer_fonts {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.Face {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.Face:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.Face i {
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .Muted {
+        padding: 0 1rem;
+    }
+    
+    .Muted h1 {
+        font-size: 2rem;
+    }
+    
+    .Muted h3 {
+        font-size: 1rem;
+    }
+    
+    form {
+        padding: 2rem 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .footer_fonts {
+        gap: 1rem;
+    }
+    
+    .Face {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 2rem 0;
+    }
+    
+    .Muted h1 {
+        font-size: 1.8rem;
+    }
+    
+    form {
+        padding: 1.5rem 1rem;
+        border-radius: 15px;
+    }
+    
+    input[type="text"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="time"],
+    input[type="number"],
+    textarea {
+        padding: 0.8rem 1rem;
+    }
+    
+    .btn {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Animation keyframes */
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Form validation styles */
+input:invalid:not(:placeholder-shown) {
+    border-color: #f56565;
+    box-shadow: 0 0 0 4px rgba(245, 101, 101, 0.1);
+}
+
+input:valid:not(:placeholder-shown) {
+    border-color: #48bb78;
+    box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.1);
+}
+
+/* Loading state for form submission */
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* Enhanced focus styles for accessibility */
+input:focus-visible,
+textarea:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Better text selection */
+::selection {
+    background: rgba(102, 126, 234, 0.3);
+    color: #2d3748;
+}
+    </style>
+{% if messages %}
+  <div class="message-container">
+    {% for message in messages %}
+      <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+<!-- 
+<header>
+
+</header> -->
+
+    <script>
+    const isLoggedIn = false; // Change to true after user logs in
+
+    const mobileMenu = document.getElementById('mobile-menu');
+    const desktopMenu = document.querySelector('.menu-desktop');
+
+    // ----------- Mobile Avatar Logic -----------
+    if (isLoggedIn) {
+        const mobileProfileHTML = `
+            <div class="mobile-avatar-wrapper">
+                <img src="static/image/profile.jpg" alt="User Profile" id="mobile-avatar-btn">
+                <div class="avatar-dropdown" id="mobile-avatar-dropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        `;
+        mobileMenu.insertAdjacentHTML('afterbegin', mobileProfileHTML);
+
+        const mobileAvatarBtn = document.getElementById('mobile-avatar-btn');
+        const mobileAvatarDropdown = document.getElementById('mobile-avatar-dropdown');
+
+        mobileAvatarBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            mobileAvatarDropdown.style.display = mobileAvatarDropdown.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!mobileAvatarBtn.contains(e.target)) {
+                mobileAvatarDropdown.style.display = 'none';
+            }
+        });
+    }
+
+    // ----------- Desktop Avatar Logic -----------
+    if (isLoggedIn) {
+        desktopMenu.innerHTML = `
+            <div class="desktop-avatar-wrapper">
+                <img src="static/image/profile.jpg" alt="User Profile" id="desktop-avatar-btn">
+                <div class="avatar-dropdown" id="desktop-avatar-dropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        `;
+    } else {
+        desktopMenu.innerHTML = `
+            <a href="Home.html">Home</a>
+            <a href="Pricing.html">Pricing</a>
+            <a href="Contact_Us.html">Contact Us</a>
+            <a href="login.html">Login</a>
+        `;
+    }
+
+    if (isLoggedIn) {
+        const desktopAvatarBtn = document.getElementById('desktop-avatar-btn');
+        const desktopAvatarDropdown = document.getElementById('desktop-avatar-dropdown');
+
+        desktopAvatarBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            desktopAvatarDropdown.style.display = desktopAvatarDropdown.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!desktopAvatarBtn.contains(e.target)) {
+                desktopAvatarDropdown.style.display = 'none';
+            }
+        });
+    }
+
+    // ----------- Hamburger Menu Toggle -----------
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+
+    hamburgerBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!hamburgerBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+            mobileMenu.style.display = 'none';
+        }
+    });
+
+      const dateInput = document.getElementById('date');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.min = today;
+
+
+</script>
+
+<main>
+<div class="Muted" style="margin: auto 100px;">
+  <h1>Fill your details to book a caregiver</h1>
+  <h3>Schedule trusted care for your loved one in just a few clicks.</h3>
+</div>
+
+<div class="Muted" style="margin: auto 100px;">
+  <form method="POST">
+    {% csrf_token %}
+    {% if messages %}
+      <div class="message-container">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input name = "full_names" type="text" id="name" placeholder="Enter your full name" required />
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input name = "phone_number" type="tel" id="phone" placeholder="Enter your phone number" required />
+    </div>
+
+    <div class="form-group">
+      <label for="location">Hospital/Location</label>
+      <input name = "location" type="text" id="location" placeholder="Where is care needed?" />
+    </div>
+
+    <div class="form-group">
+      <label for="date">Booking Date</label>
+      <input name ="book_date" type="date" id="date" required />
+    </div>
+
+    <div class="form-group">
+      <label for="time">Booking Time</label>
+      <input name = "time" type="time" id="time" required />
+    </div>
+    <div class="form-group">
+      <label for="duration">Booking Duration (in hours)</label>
+      <input name = "duration" type="number" id="duration" placeholder="How many hours do you need care?" min="1" required />
+    </div>
+
+     <div class="form-group">
+    <label for="instructions">Additional Information (optional)</label>
+    <textarea name = "desc" id="instructions" rows="3" placeholder="Any special notes or instructions?"></textarea>
+  </div>
+
+    <button class="btn" type="submit" style="margin-bottom:15px;">Book Now</button>
+  </form>
+</div>
+
+
+</div>
+</div>
+
+
+
+
+    
+</main>
+
+
+<footer class="main_footer">
+       
+    <div class="footer-content">
+        <div class="links">
+            <a href="About.html" class="linking">About</a>
+            <a href="Contact_Us.html" class="linking">Contact</a>
+            <a href="Privacy_Policy.html"class="linking">Privacy Policy</a>
+            <a href="Terms.html" class="linking">Terms</a>
+        </div>
+    </div>
+
+    <div class="footer_fonts">
+        <div class="Face">
+        <i class="fa-brands fa-facebook"></i>
+        </div>
+        <div class="Face">
+            <i class="fa-brands fa-instagram"></i>
+        </div>
+        <div class="Face">
+         <i class="fa-brands fa-twitter"></i>
+        </div>
+        <div class="Face">
+            <i class="fa-brands fa-linkedin"></i>
+        </div>
+    </div>
+</footer>
+
+
+</body>
+</html>

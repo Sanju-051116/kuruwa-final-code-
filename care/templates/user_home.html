@@ -1,0 +1,705 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Care - Kuruwa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Message container styling */
+        .message-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 500;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Header styling */
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav_left_section a {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav_left_section a:hover {
+            color: #ffd700;
+            transition: color 0.3s ease;
+        }
+
+        nav > div:last-child {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main section styling */
+        .main {
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            height: 100%;
+        }
+
+        /* Form styling */
+        .care-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h2 {
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section h2::before {
+            content: '🏥';
+            font-size: 1.2rem;
+        }
+
+        .form-section:last-child h2::before {
+            content: '📋';
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .datetime-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Caretakers section styling */
+        .caretakers-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-header h2 {
+            color: #4a5568;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sort-dropdown {
+            padding: 0.6rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sort-dropdown:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #718096;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4a5568;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Caregiver cards styling */
+        .caregiver-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+            border: 3px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover img {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: #718096;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .location {
+            color: #4a5568;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .location::before {
+            content: '📍';
+        }
+
+        .price {
+            color: #667eea;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .availability {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .buttons {
+            text-align: center;
+        }
+
+        .book {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .book:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+        }
+
+        .book:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .care-form {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                padding: 1rem;
+            }
+            
+            nav {
+                padding: 1rem;
+            }
+            
+            .care-form,
+            .caretakers-section {
+                padding: 1.5rem;
+            }
+            
+            .datetime-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+        }
+
+        /* Custom scrollbar */
+        .caretakers-section::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .caretakers-section::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .caretakers-section::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+        }
+
+        .caretakers-section::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Django messages -->
+    {% if messages %}
+      <div class="message-container">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <header>
+        <nav>
+            <div class="nav_left_section">
+                <a href="/">Kuruwa</a>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{% url 'notifications' %}" style="background: none; border: none; cursor: pointer; font-size: 1.5rem; text-decoration: none;">🔔</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="main">
+        <div class="container">
+            <!-- Left Form Section -->
+            <div class="care-form">
+                <div class="form-section">
+                    <h2>Where do you need care?</h2>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="address" placeholder="Enter your location" value="Chabahil">
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="radius">
+                            <option value="5">Within 5 miles</option>
+                            <option value="10">Within 10 miles</option>
+                            <option value="15">Within 15 miles</option>
+                            <option value="25">Within 25 miles</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Care Details</h2>
+                    <div class="form-group">
+                        <label for="careType">Type of Care</label>
+                        <select class="form-control" id="careType">
+                            <option value="">Select care type</option>
+                            <option value="nursing">Certified Nursing Assistant</option>
+                            <option value="practical">Licensed Practical Nurse</option>
+                            <option value="home_health">Home Health Aide</option>
+                            <option value="companion">Companion Care</option>
+                        </select>
+                    </div>
+
+                    <div class="datetime-group">
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="startTime">Start Time</label>
+                            <input type="time" class="form-control" id="startTime" value="07:30">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration">Duration</label>
+                        <select class="form-control" id="duration">
+                            <option value="2">2 hours</option>
+                            <option value="4" selected>4 hours</option>
+                            <option value="6">6 hours</option>
+                            <option value="8">8 hours</option>
+                            <option value="12">12 hours</option>
+                            <option value="24">24 hours</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requirements">Special Requirements</label>
+                        <textarea class="form-control" id="requirements" rows="4" placeholder="Any specific needs or medical conditions to consider..."></textarea>
+                    </div>
+
+                    <button class="btn-primary" onclick="findCaretakers()">Find Available Caretakers</button>
+                </div>
+            </div>
+
+            <!-- Right Caretakers Section -->
+            <div class="caretakers-section">
+                <div class="section-header">
+                    <h2>Available Caretakers</h2>
+                    <select class="sort-dropdown" id="sortBy">
+                        <option value="rating">Sort by Rating</option>
+                        <option value="price">Sort by Price</option>
+                        <option value="distance">Sort by Distance</option>
+                        <option value="experience">Sort by Experience</option>
+                    </select>
+                </div>
+
+                <div id="caretakersContainer">
+                    <div class="empty-state">
+                        <h3>Ready to find care?</h3>
+                        <p>Fill out the form and click "Find Available Caretakers" to see available care providers in your area.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const userIsAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+        let currentCaretakers = [];
+        let selectedCaretaker = null;
+
+        // Set default date to today
+        document.getElementById('startDate').value = new Date().toISOString().split('T')[0];
+        const todayDate = new Date().toISOString().split("T")[0];
+        document.getElementById('startDate').setAttribute("min", todayDate);
+
+        // Date/time validation
+        const dateInput = document.getElementById("startDate");
+        const timeInput = document.getElementById("startTime");
+
+        function validateDateTime() {
+            const selectedDate = dateInput.value;
+            const selectedTime = timeInput.value;
+
+            if (!selectedDate || !selectedTime) return;
+
+            const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
+            const now = new Date();
+
+            if (selectedDateTime < now) {
+                alert("Please select a valid future date and time.");
+                dateInput.value = "";
+                timeInput.value = "";
+            }
+        }
+
+        dateInput.addEventListener("change", validateDateTime);
+        timeInput.addEventListener("change", validateDateTime);
+
+        // Find caretakers function
+        async function findCaretakers() {
+            const container = document.getElementById('caretakersContainer');
+            container.innerHTML = '<div class="loading">🔍 Searching for available caretakers...</div>';
+
+            try {
+                const response = await fetch('/api/caretakers/');
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const caretakers = await response.json();
+                currentCaretakers = caretakers;
+                displayCaretakers(caretakers);
+            } catch (error) {
+                console.error('Error finding caretakers:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>❌ Error</h3>
+                        <p>Unable to find caretakers. Please try again.</p>
+                    </div>`;
+            }
+        }
+
+        // Display caretakers function
+        function displayCaretakers(caretakers) {
+            const container = document.getElementById('caretakersContainer');
+
+            if (caretakers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>😔 No Available Caretakers</h3>
+                        <p>Please adjust your search criteria and try again.</p>
+                    </div>`;
+                return;
+            }
+
+            const html = caretakers.map(caretaker => `
+                <div class="card">
+                    <img src="${caretaker.image_url || '/static/default-avatar.png'}" alt="${caretaker.full_names}" />
+                    <h2>${caretaker.full_names}</h2>
+                    <p>${caretaker.experiences} years of Experience</p>
+                    <div class="location">${caretaker.location || 'Location not specified'}</div>
+                    <div class="price">Rs.${caretaker.rate}/hour</div>
+                    <div class="availability">
+                        ${caretaker.availability ? '✅ Available now' : '❌ Not available'}
+                    </div>
+                    <div class="buttons">
+                        <button class="book" onclick="handleBooking(${caretaker.id}, ${userIsAuthenticated})">Book Now</button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `<div class="caregiver-list">${html}</div>`;
+        }
+
+        // Handle booking function
+        function handleBooking(caretakerId, isAuthenticated) {
+            if (isAuthenticated) {
+                window.location.href = `/book/${caretakerId}/`;
+            } else {
+                alert("You need to log in to book a caretaker.");
+                window.location.href = `/login/?next=/book/${caretakerId}/`;
+            }
+        }
+
+        // Sort functionality
+        document.getElementById('sortBy').addEventListener('change', function() {
+            const sortBy = this.value;
+            const sorted = [...currentCaretakers].sort((a, b) => {
+                switch(sortBy) {
+                    case 'rating':
+                        return b.rating - a.rating;
+                    case 'price':
+                        return a.rate - b.rate;
+                    case 'distance':
+                        return a.distance - b.distance;
+                    case 'experience':
+                        return b.experiences - a.experiences;
+                    default:
+                        return 0;
+                }
+            });
+            displayCaretakers(sorted);
+        });
+
+        // Auto-dismiss messages
+        setTimeout(() => {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(msg => {
+                msg.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

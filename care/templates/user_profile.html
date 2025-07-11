@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kuruwa Profile Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .edit-btn {
+      background-color: #3498db;
+      color: #fff;
+    }
+
+    .save-btn {
+      background-color: #2ecc71;
+      color: #fff;
+    }
+
+    .back-btn {
+      background-color: #e74c3c;
+      color: #fff;
+    }
+
+    /* Profile Image */
+    .image-section {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    #imageUpload {
+      display: none;
+    }
+
+    .upload-btn {
+      background-color: #555;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+ <form method="POST" action="{% url 'update_user_profile' %}" id="profileForm">
+  {% csrf_token %}
+
+  <input name="full_name" type="text" value="{{ user_profile.full_name }}" disabled required>
+  <input name="email" type="email" value="{{ user_profile.email }}" disabled required>
+  <input name="phone_number" type="tel" value="{{ user_profile.phone_number }}" disabled required>
+  <input name="city" type="text" value="{{ user_profile.city }}" disabled required>
+  <input name="password" type="password" placeholder="Enter New Password (optional)" disabled>
+
+  <div id="formButtons">
+    <button type="button" onclick="enableEdit()">Edit</button>
+    <button type="submit" id="saveBtn" style="display:none;">Save</button>
+    <button type="button" onclick="confirmDelete()">Delete</button>
+  </div>
+</form>
+
+<!-- Optional Delete Confirmation -->
+<form method="POST" action="{% url 'delete_user_profile' %}" id="deleteForm" style="display: none;">
+  {% csrf_token %}
+</form>
+
+<script>
+  function enableEdit() {
+    const inputs = document.querySelectorAll('#profileForm input');
+    inputs.forEach(input => input.disabled = false);
+
+    document.getElementById('saveBtn').style.display = 'inline';
+  }
+
+  function confirmDelete() {
+    if (confirm("Are you sure you want to delete your profile?")) {
+      document.getElementById('deleteForm').submit();
+    }
+  }
+</script>
+
+
+</body>
+</html>

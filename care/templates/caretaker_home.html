@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <p> {{ caretakers.full_names}}</p> -->
+
+    <title>CareConnect - Caretaker Dashboard</title>
+    <style>
+        /* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Header Styles */
+.header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #6366f1;
+    text-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+}
+
+.welcome {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.welcome strong {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.welcome button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.welcome button:hover {
+    background: rgba(99, 102, 241, 0.1);
+    transform: scale(1.1);
+}
+
+.welcome a {
+    color: #dc2626;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.welcome a:hover {
+    background: rgba(220, 38, 38, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.dashboard-header p {
+    color: #6b7280;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tab {
+    flex: 1;
+    padding: 1rem 2rem;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: #6b7280;
+}
+
+.nav-tab.active {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.nav-tab:hover:not(.active) {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h2 {
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Booking Cards */
+.booking-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.booking-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.booking-card p {
+    margin-bottom: 0.5rem;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.booking-card button {
+    margin: 0.5rem 0.5rem 0.5rem 0;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.booking-card button[name="response"][value="Accept"] {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.booking-card button[name="response"][value="Decline"] {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.booking-card button[name="response"][value="Complete"] {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.booking-card button[name="response"][value="Cancel"] {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.booking-card button[onclick*="openModal"] {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+}
+
+.booking-card button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #9ca3af;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Profile Section */
+.profile-container {
+    display: grid;
+    gap: 2rem;
+}
+
+.profile-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.profile-section h3 {
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.profile-section p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+}
+
+.rate-input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.rate-input {
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 120px;
+    transition: all 0.3s ease;
+}
+
+.rate-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Profile Form */
+#profileForm {
+    display: grid;
+    gap: 1rem;
+}
+
+#profileForm input,
+#profileForm select {
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+#profileForm input:focus,
+#profileForm select:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+#profileForm input[readonly],
+#profileForm select[disabled] {
+    background: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+#profileForm button {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+#profileForm button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+#profileForm a button {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: white;
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #ef4444;
+}
+
+.modal-content h3 {
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.modal-content p {
+    margin-bottom: 1rem;
+    color: #4b5563;
+}
+
+.modal-content strong {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .header {
+        padding: 1rem;
+    }
+    
+    .dashboard-header {
+        padding: 1.5rem;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    
+    .nav-tabs {
+        flex-direction: column;
+    }
+    
+    .nav-tab {
+        text-align: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .welcome {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .booking-card {
+        padding: 1rem;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .booking-card button {
+        width: 100%;
+        margin: 0.25rem 0;
+    }
+    
+    .rate-input-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">Kuruwa</div>
+        <div class="welcome">
+            Welcome, <strong>{{ caretaker.full_names }}</strong>
+            <div style="display: flex; gap: 0.5rem;">
+                <button style="background: none; border: none; cursor: pointer;">🔔</button>
+                <!-- <button style="background: none; border: none; cursor: pointer;">👤</button> -->
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Caretaker Dashboard</h1>
+            <p>{{ caretaker.full_names }}</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" >Rs. {{ caretakers.rate }}</div>
+                    <div class="stat-label">Current Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="pendingRequests">0</div>
+                    <div class="stat-label">Pending Requests</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('requests')">Requests</button>
+            <button class="nav-tab" onclick="showTab('profile')">Profile</button>
+            <button class="nav-tab" onclick="showTab('history')">History</button>
+        </div>
+
+
+
+        <div id="requests" class="tab-content active">
+  <h2>Booking Requests</h2>
+
+  {% if bookings %}
+    {% for booking in bookings %}
+      <div class="booking-card">
+        <p>Patient: {{ booking.patient_full_name }}</p>
+        <p>Location: {{ booking.patient_location }}</p>
+        <p>Requested at: {{ booking.requested_at }}</p>
+
+        <!-- View Details Button -->
+        <button onclick="openModal({{ booking.id }})">👁️ View Details</button>
+
+        <!-- Accept / Decline Form -->
+        <form method="POST" action="{% url 'respond_booking' booking.id %}">
+          {% csrf_token %}
+          <button name="response" value="Accept">✅ Accept</button>
+          <button name="response" value="Decline">❌ Decline</button>
+        </form>
+
+        <!-- Modal for Patient Details -->
+        <div id="modal-{{ booking.id }}" class="modal">
+          <div class="modal-content">
+            <span class="close" onclick="closeModal({{ booking.id }})">&times;</span>
+            <h3>Patient Details</h3>
+            <p><strong>Full Name:</strong> {{ booking.patient_full_name }}</p>
+            <p><strong>Email:</strong> {{ booking.patient.email }}</p>
+            <p><strong>Phone:</strong> {{ booking.phone_number }}</p>
+            <p><strong>Location:</strong> {{ booking.patient_location }}</p>
+            <p><strong>Description:</strong> {{ booking.Description }}</p>
+            <p><strong>Booking Date:</strong> {{ booking.book_date }}</p>
+            <p><strong>Duration:</strong> {{ booking.duration }} hour(s)</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <h3>No pending requests</h3>
+      <p>New care requests will appear here when patients book your services.</p>
+    </div>
+  {% endif %}
+</div>
+
+
+        <!-- Profile Tab -->
+        <div id="profile" class="tab-content">
+            <div class="profile-container">
+                <div class="profile-section">
+                    <h3>Set Your Hourly Rate</h3>
+                    <p>This is what patients will pay for your services</p>
+                    
+                    <div class="rate-input-container">
+                        <span>Rs. {{ caretaker.rate }}</span>
+                        <input type="number" class="rate-input" id="hourlyRate" value="{{ caretakers.rate }}" step="0.50" min="15" max="100">
+                        <span>/hour</span>
+                    </div>
+                    
+                  
+                </div>
+
+                <form method="POST" id="profileForm" enctype="multipart/form-data">
+                         {% csrf_token %}
+
+    <input name="full_names" type="text" placeholder="Full Name" value="{{ caretakers.full_names }}" {% if not edit %}readonly{% endif %} required>
+    <input name="emails" type="email" placeholder="Email Address" value="{{ caretakers.emails }}" {% if not edit %}readonly{% endif %} required>
+    <input name="phone_numbers" type="tel" placeholder="Phone Number" value="{{ caretakers.phone_numbers }}" {% if not edit %}readonly{% endif %} required>
+
+    <select name="specializations" {% if not edit %}disabled{% endif %} required>
+        <option {% if caretaker.specializations == "Beginner" %}selected{% endif %}>Beginner</option>
+        <option {% if caretaker.specializations == "Intermediate" %}selected{% endif %}>Intermediate</option>
+        <option {% if caretaker.specializations == "Experienced" %}selected{% endif %}>Experienced</option>
+    </select>
+
+    <input name="experiences" type="number" placeholder="Experience (Years)" value="{{ caretakers.experiences }}" min="0" {% if not edit %}readonly{% endif %} required>
+    <input name="citys" type="text" placeholder="City, State" value="{{ caretakers.locations }}" {% if not edit %}readonly{% endif %} required>
+    <input name="rate" type="number" placeholder="Rate per hour" value="{{ caretakers.rate }}" min="0" {% if not edit %}readonly{% endif %} required>
+    <input type="text" name="availability" placeholder="Availability (e.g., Mon-Fri, 9am-5pm)" value="{{ caretakers.availability }}" {% if not edit %}readonly{% endif %} required>
+
+    {% if edit %}
+        <input name="image" type="file" accept="image/*">
+    {% endif %}
+
+    {% if edit %}
+        <button type="submit">Save Changes</button>
+    {% else %}
+        <a href="{% url 'caretaker_profile' %}?edit=true"><button type="button">Edit</button></a>
+    {% endif %}
+</form>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+ <div id="history" class="tab-content">
+  <h2>📜 Completed/Accepted Bookings</h2>
+
+  {% if history_bookings %}
+    {% for booking in history_bookings %}
+      <div class="booking-card">
+        <p>Patient: {{ booking.patient_full_name }}</p>
+        <p>Location: {{ booking.patient_location }}</p>
+        <p>Date: {{ booking.book_date }}</p>
+        <p>Time: {{ booking.requested_at }}</p>
+        <p>Duration: {{ booking.duration }} hour(s)</p>
+        <p>Status: {{ booking.status }}</p>
+
+        {% if booking.status != 'Completed' %}
+        <form method="POST" action="{% url 'respond_booking' booking.id %}">
+            {% csrf_token %}
+            <button name="response" value="Cancel">🛑 Cancel</button>
+
+            <button name="response" value="Complete">✅ Mark as Completed</button>
+        </form>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <h3>No completed jobs yet</h3>
+      <p>Your completed care assignments will appear here.</p>
+    </div>
+  {% endif %}
+</div>
+
+
+    <script>
+ 
+
+        let currentRequests = [...mockRequests];
+
+          function openModal(id) {
+    document.getElementById('modal-' + id).style.display = 'block';
+  }
+
+  function closeModal(id) {
+    document.getElementById('modal-' + id).style.display = 'none';
+  }
+
+  // Close modal if clicking outside
+  window.onclick = function(event) {
+    document.querySelectorAll('.modal').forEach(function(modal) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  }
+
+        // Initialize dashboard
+        function initializeDashboard() {
+            updateStats();
+            displayRequests();
+            loadProfile();
+        }
+
+        // Update dashboard statistics
+        function updateStats() {
+            const rate = document.getElementById('hourlyRate').value;
+            document.getElementById('currentRate').textContent = `$${rate}/hr`;
+            document.getElementById('pendingRequests').textContent = currentRequests.length;
+        }
+
+        // Display pending requests
+        function displayRequests() {
+            const container = document.getElementById('requestsList');
+            
+            if (currentRequests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No pending requests</h3>
+                        <p>New care requests will appear here when patients book your services.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentRequests.map(request => `
+                <div class="request-card">
+                    <div class="request-header">
+                        <div class="request-info">
+                            <h3>Care Request from ${request.patientName}</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="request-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Patient</div>
+                            <div class="detail-value">${request.patientName}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value">${request.phone}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Address</div>
+                            <div class="detail-value">${request.address}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Date & Time</div>
+                            <div class="detail-value">${request.date} at ${request.time}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Duration</div>
+                            <div class="detail-value">${request.duration}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Rate</div>
+                            <div class="detail-value">${request.rate}</div>
+                        </div>
+                    </div>
+                    
+                    ${request.specialRequirements ? `
+                        <div style="margin-bottom: 1rem;">
+                            <div class="detail-label">Special Requirements</div>
+                            <div class="detail-value">${request.specialRequirements}</div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="request-actions">
+                        <button class="btn btn-decline" onclick="declineRequest(${request.id})">Decline</button>
+                        <button class="btn btn-accept" onclick="acceptRequest(${request.id})">Accept</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+        }
+
+        // Rate setting functionality
+        function setRate(rate) {
+            document.getElementById('hourlyRate').value = rate;
+            
+            // Update active suggestion
+            document.querySelectorAll('.rate-suggestion').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            updateStats();
+        }
+
+        // Request management
+        function acceptRequest(requestId) {
+            const request = currentRequests.find(r => r.id === requestId);
+            if (request) {
+                // In a real application, this would make an API call
+                alert(`Request from ${request.patientName} accepted! You will receive further details shortly.`);
+                
+                // Remove from pending requests
+                currentRequests = currentRequests.filter(r => r.id !== requestId);
+                displayRequests();
+                updateStats();
+            }
+        }
+
+        function declineRequest(requestId) {
+            const request = currentRequests.find(r => r.id === requestId);
+            if (request) {
+                if (confirm(`Are you sure you want to decline the request from ${request.patientName}?`)) {
+                    // In a real application, this would make an API call
+                    currentRequests = currentRequests.filter(r => r.id !== requestId);
+                    displayRequests();
+                    updateStats();
+                }
+            }
+        }
+
+        // Profile management
+        function loadProfile() {
+            // In a real application, this would load from the backend
+            // For demo, we'll set some default values
+            document.getElementById('specialization').value = 'cna';
+            document.getElementById('availability').value = 'available';
+            document.getElementById('availability2').value = 'available';
+            document.getElementById('experience').value = '5';
+            document.getElementById('bio').value = 'Experienced certified nursing assistant with 5 years in home healthcare. Specialized in elderly care and post-operative support.';
+            document.getElementById('certifications').value = 'CNA, CPR, First Aid';
+        }
+
+        // Handle profile form submission
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const profileData = {
+                hourlyRate: document.getElementById('hourlyRate').value,
+                specialization: document.getElementById('specialization').value,
+                availability: document.getElementById('availability').value,
+                experience: document.getElementById('experience').value,
+                bio: document.getElementById('bio').value,
+                certifications: document.getElementById('certifications').value
+            };
+
+            // In a real application, this would save to the backend
+            console.log('Saving profile:', profileData);
+            alert('Profile updated successfully!');
+            updateStats();
+        });
+
+        // Handle hourly rate changes
+        document.getElementById('hourlyRate').addEventListener('input', function() {
+            updateStats();
+            
+            // Update rate suggestion active state
+            const rate = parseFloat(this.value);
+            document.querySelectorAll('.rate-suggestion').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === `$${rate}/hr`) {
+                    btn.classList.add('active');
+                }
+            });
+        });
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+</body>
+</html>

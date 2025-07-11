@@ -1,0 +1,69 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Notifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f4f4f4;
+        }
+        .notification-card {
+    padding: 1rem;
+    margin: 1rem 0;
+    background: #f9f9f9;
+    border-left: 4px solid #007bff;
+    border-radius: 8px;
+}
+.btn-cancel {
+    background-color: #dc3545;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+    </style>
+</head>
+<body>
+{% block content %}
+  <div class="notifications-section">
+    <h2>🔔 Your Pending Bookings</h2>
+
+    {% if pending_bookings %}
+      {% for booking in pending_bookings %}
+        <div class="notification-card">
+          <p><strong>Caretaker:</strong> {{ booking.caretaker.full_names }}</p>
+          <p><strong>Experience:</strong> {{ booking.caretaker.experiences }} years</p>
+          <p><strong>Location:</strong> {{ booking.patient_location }}</p>
+          <p><strong>Date:</strong> {{ booking.book_date }}</p>
+          <p><strong>Time:</strong> {{ booking.requested_at }}</p>
+          <p><strong>Duration:</strong> {{ booking.duration }} hour(s)</p>
+
+          {# Estimate hourly rate and total #}
+          {% with rate=booking.caretaker.rate %}
+            <p><strong>Estimated Rate:</strong> Rs.{{ rate }} /hr</p>
+            <p><strong>Total Amount:</strong> Rs.{{ rate|floatformat:2|add:"0"|floatformat:1|floatformat:0|stringformat:"s"|add:booking.duration|floatformat:0 }}</p>
+          {% endwith %}
+
+          <form method="POST" action="{% url 'cancel_booking' booking.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-cancel">❌ Cancel</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <p>No pending bookings.</p>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+</body>
+</html>
